@@ -22,6 +22,7 @@ Including another URLconf
 
 from django.http import HttpResponse
 from django.conf.urls import url
+import json
 
 from . import view
 
@@ -39,15 +40,22 @@ def search(request):
 # 接收POST请求数据
 def search_post(request):
     print(request)
-    ctx = {'status': '0000'}
-    if request.POST:
-        ctx['rlt'] = request.POST['q']
+    reqJson = json.loads(request.body)
+    ctx = {
+        'status': '0000',
+        'q': reqJson['q']
+    }
+    # if request.POST:
+    #     print('hello--------')
+    #     ctx['rlt'] = request.POST['q']
     print(ctx)
-    return HttpResponse(ctx)
+    return HttpResponse(json.dumps(ctx))
 
 
 urlpatterns = [
+    url(r'^$', view.home),
     url(r'^hello$', view.hello),
     url(r'^search$', search),
     url(r'^search_post$', search_post),
+    url('', view.notFound),
 ]
